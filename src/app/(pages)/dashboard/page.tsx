@@ -18,13 +18,9 @@ const DashboardPage = async () => {
   }
 
   return (
-    <div>
-      <SignOutForm />
-
-      <div className="w-full flex flex-col md:flex-row gap-4">
-        <WeightCard weights={weights?.data ?? []} />
-        <TestResultsCard testResults={testResults?.data ?? []} />
-      </div>
+    <div className="w-full flex flex-col md:flex-row gap-4">
+      <WeightCard weights={weights?.data ?? []} />
+      <TestResultsCard testResults={testResults?.data ?? []} />
     </div>
   );
 };
