@@ -39,7 +39,7 @@ export const signUp = async (values: z.infer<typeof SignUpSchema>) => {
       },
     ]);
 
-    const token = createToken(values.email, userId, code);
+    const token = createToken(values.email, userId, values.firstName, code);
 
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
 
@@ -177,7 +177,12 @@ export const resendVerificationEmail = async (email: string) => {
       })
       .where(eq(emailVerificationTable.userId, existingUser.id));
 
-    const token = createToken(email, existingUser.id, code);
+    const token = createToken(
+      email,
+      existingUser.id,
+      existingUser.firstName,
+      code
+    );
 
     const url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/verify-email?token=${token}`;
 
@@ -243,8 +248,13 @@ const createSessionCookie = async (userId: string) => {
   );
 };
 
-const createToken = (email: string, userId: string, code: string) =>
-  jwt.sign({ email: email, userId, code }, process.env.JWT_SECRET!, {
+const createToken = (
+  email: string,
+  userId: string,
+  firstName: string,
+  code: string
+) =>
+  jwt.sign({ email, userId, code, firstName }, process.env.JWT_SECRET!, {
     expiresIn: "1h",
   });
 

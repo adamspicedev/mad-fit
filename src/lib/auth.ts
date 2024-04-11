@@ -2,6 +2,9 @@ import { Lucia } from "lucia";
 import adapter from "./db/adapter";
 import { cookies } from "next/headers";
 import { cache } from "react";
+import db from "./db";
+import { eq } from "drizzle-orm";
+import { userTable } from "./db/schema";
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -23,6 +26,8 @@ export const validateRequest = cache(async () => {
 
   const { user, session } = await lucia.validateSession(sessionId);
 
+  let userData = null;
+
   try {
     if (session && session.fresh) {
       const sessionCookie = lucia.createSessionCookie(session.id);
@@ -40,10 +45,14 @@ export const validateRequest = cache(async () => {
         sessionCookie.attributes
       );
     }
+
+    userData = await db.query.userTable.findFirst({
+      where: eq(userTable.id, user?.id ?? ""),
+    });
   } catch {
     // Next.js throws error when attempting to set cookies when rendering page
   }
-  return { user, session };
+  return { user, session, userData };
 });
 
 declare module "lucia" {
