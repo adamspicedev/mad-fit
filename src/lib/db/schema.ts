@@ -50,3 +50,32 @@ export const sessionTable = pgTable("session", {
     mode: "date",
   }).notNull(),
 });
+
+export const weightTable = pgTable("weight", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  weight: text("weight").notNull(),
+  date: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
+});
+
+export const testResultsTable = pgTable("test_results", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => userTable.id),
+  pressUps: text("pressups"),
+  parkLap: text("park_lap"),
+  stepUp: text("step_up"),
+  sledPush: text("sled_push"),
+  chestPress: text("chest_press"),
+  plank: text("plank"),
+  date: timestamp("created_at", {
+    withTimezone: true,
+    mode: "date",
+  }).notNull(),
+});
